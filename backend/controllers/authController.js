@@ -16,7 +16,6 @@ exports.setCookieAndRedirect = async (req, res) => {
 
     // Use the token already generated in `passport.js`
     const token = req.user.token;
-    console.log("✅ Using Token from Passport:", token);
 
     // Set token in cookie (optional)
     res.cookie("token", token, { httpOnly: true, secure: false });
@@ -37,8 +36,6 @@ exports.getCurrentUser = async (req, res) => {
       return res.status(401).json({ error: "No token provided" });
     }
 
-    console.log("📌 Received Token in Backend:", token); // ✅ Debugging log
-
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -46,8 +43,6 @@ exports.getCurrentUser = async (req, res) => {
       console.error("🚨 JWT Verification Error:", error);
       return res.status(403).json({ error: "Invalid or expired token" });
     }
-
-    console.log("🔍 Decoded Token in Backend:", decoded); // ✅ Debugging log
 
     if (!decoded.id) {
       return res.status(403).json({ error: "Invalid token: No user ID found" });

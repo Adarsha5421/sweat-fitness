@@ -21,7 +21,6 @@ function App() {
     const token = urlParams.get("token");
 
     if (token) {
-      console.log("✅ Storing Correct Token in LocalStorage:", token); // Debugging log
       localStorage.setItem("token", token);
       loadUser();
       navigate("/profile");

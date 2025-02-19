@@ -37,6 +37,8 @@ exports.createWorkout = async (req, res) => {
   try {
     const { name, bodyPart, difficulty, equipment, instructions, videoUrl } = req.body;
 
+    console.log(req.body);
+
     const newWorkout = new Workout({
       name,
       bodyPart,
@@ -49,6 +51,8 @@ exports.createWorkout = async (req, res) => {
     await newWorkout.save();
     res.status(201).json({ message: "Workout added successfully", workout: newWorkout });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({ error: "Failed to add workout" });
   }
 };

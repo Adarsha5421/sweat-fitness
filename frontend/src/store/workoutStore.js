@@ -42,6 +42,8 @@ const useWorkoutStore = create((set) => ({
 
   // Create a new workout
   addWorkout: async (token, workoutData) => {
+    console.log(workoutData);
+
     try {
       const newWorkout = await createWorkout(token, workoutData);
       set((state) => ({ workouts: [...state.workouts, newWorkout] }));

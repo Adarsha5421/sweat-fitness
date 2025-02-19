@@ -13,8 +13,6 @@ export const fetchUser = async () => {
 
   if (!token) throw new Error("No token found");
 
-  console.log("🔍 Fetching user with Correct Token:", token); // ✅ Debugging log
-
   const res = await axios.get(`${API_URL}/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });

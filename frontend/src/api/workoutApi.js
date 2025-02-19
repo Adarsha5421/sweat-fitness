@@ -2,6 +2,12 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/workouts";
 
+// ✅ Helper function to include the Authorization token
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return { Authorization: `Bearer ${token}` };
+};
+
 // Fetch all workouts
 export const fetchWorkouts = async () => {
   const res = await axios.get(API_URL);
@@ -20,26 +26,26 @@ export const fetchWorkoutsByBodyPart = async (bodyPart) => {
   return res.data;
 };
 
-// Create a new workout (Admin Only)
+// ✅ Create a new workout (Admin Only)
 export const createWorkout = async (token, workoutData) => {
   const res = await axios.post(API_URL, workoutData, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
   return res.data;
 };
 
-// Update an existing workout (Admin Only)
-export const updateWorkout = async (token, workoutId, updatedData) => {
+// ✅ Update an existing workout (Admin Only)
+export const updateWorkout = async (workoutId, updatedData) => {
   const res = await axios.put(`${API_URL}/${workoutId}`, updatedData, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
   return res.data;
 };
 
-// Delete a workout (Admin Only)
-export const deleteWorkout = async (token, workoutId) => {
+// ✅ Delete a workout (Admin Only)
+export const deleteWorkout = async (workoutId) => {
   const res = await axios.delete(`${API_URL}/${workoutId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
   return res.data;
 };

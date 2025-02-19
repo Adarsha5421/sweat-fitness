@@ -31,8 +31,6 @@ passport.use(
           await user.save();
         }
 
-        console.log("User Found or Created:", user); // ✅ Debugging Log
-
         // ✅ Fix: Ensure `id` is stored in the JWT
         const token = jwt.sign(
           {
@@ -44,8 +42,6 @@ passport.use(
           process.env.JWT_SECRET,
           { expiresIn: "7d" } // Use a valid expiration time
         );
-
-        console.log("Generated Token:", token); // ✅ Debugging Log
 
         return done(null, { user, token });
       } catch (error) {

@@ -1,136 +1,97 @@
 import { useState } from "react";
 import useCalculatorStore from "../store/calculatorStore";
 
-export default function Calculators() {
-  const { getCalories, getMacros, getOneRepMax, calories, macros, oneRepMax, error } = useCalculatorStore();
-  const [calorieForm, setCalorieForm] = useState({ age: "", weight: "", height: "", gender: "male", activityLevel: "moderate" });
-  const [macroForm, setMacroForm] = useState({ calories: "", goal: "Maintain" });
-  const [oneRepMaxForm, setOneRepMaxForm] = useState({ weight: "", reps: "" });
+export default function Calculator() {
+  const { getCalories, getMacros, getOneRepMax, calories, macros, oneRepMax, loading, error } = useCalculatorStore();
+  const [input, setInput] = useState({
+    weight: "",
+    height: "",
+    age: "",
+    gender: "male",
+    activityLevel: "sedentary",
+    goal: "maintain",
+    reps: "",
+  });
 
-  const handleSubmitCalories = (e) => {
-    e.preventDefault();
-    getCalories(calorieForm);
+  const handleChange = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const handleSubmitMacros = (e) => {
-    e.preventDefault();
-    getMacros(macroForm);
-  };
-
-  const handleSubmitOneRepMax = (e) => {
-    e.preventDefault();
-    getOneRepMax(oneRepMaxForm);
+  const handleCalculate = (type) => {
+    if (type === "calories") getCalories(input);
+    if (type === "macros") getMacros(input);
+    if (type === "oneRepMax") getOneRepMax(input);
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Fitness Calculators</h1>
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
-
-      {/* Calorie Calculator */}
-      <div className="border p-4 rounded-lg shadow-md bg-white mb-6">
-        <h2 className="text-xl font-semibold mb-4">Calorie Calculator</h2>
-        <form onSubmit={handleSubmitCalories} className="space-y-3">
-          <input
-            type="number"
-            placeholder="Age"
-            value={calorieForm.age}
-            onChange={(e) => setCalorieForm({ ...calorieForm, age: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Weight (kg)"
-            value={calorieForm.weight}
-            onChange={(e) => setCalorieForm({ ...calorieForm, weight: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Height (cm)"
-            value={calorieForm.height}
-            onChange={(e) => setCalorieForm({ ...calorieForm, height: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <select value={calorieForm.activityLevel} onChange={(e) => setCalorieForm({ ...calorieForm, activityLevel: e.target.value })} className="w-full p-2 border rounded">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Calorie Calculator */}
+        <div className="border p-4 rounded shadow-md">
+          <h2 className="text-xl font-bold">Calorie Calculator</h2>
+          <input type="number" name="weight" placeholder="Weight (kg)" value={input.weight} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <input type="number" name="height" placeholder="Height (cm)" value={input.height} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <input type="number" name="age" placeholder="Age" value={input.age} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <select name="gender" value={input.gender} onChange={handleChange} className="w-full p-2 border rounded my-2">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          <select name="activityLevel" value={input.activityLevel} onChange={handleChange} className="w-full p-2 border rounded my-2">
             <option value="sedentary">Sedentary</option>
             <option value="light">Light Activity</option>
             <option value="moderate">Moderate Activity</option>
-            <option value="high">High Activity</option>
+            <option value="active">Active</option>
+            <option value="very_active">Very Active</option>
           </select>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+          <button onClick={() => handleCalculate("calories")} className="w-full bg-blue-500 text-white py-2 rounded">
             Calculate
           </button>
-        </form>
-        {calories && (
-          <p className="mt-4 text-center">
-            Your daily calorie needs: <strong>{calories.total} kcal</strong>
-          </p>
-        )}
+          {calories && (
+            <p className="mt-2">
+              Daily Calories Needed: <strong>{calories.caloriesNeeded}</strong>
+            </p>
+          )}
+        </div>
+
+        {/* Macro Calculator */}
+        <div className="border p-4 rounded shadow-md">
+          <h2 className="text-xl font-bold">Macro Calculator</h2>
+          <input type="number" name="weight" placeholder="Weight (kg)" value={input.weight} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <select name="goal" value={input.goal} onChange={handleChange} className="w-full p-2 border rounded my-2">
+            <option value="bulk">Bulking</option>
+            <option value="cut">Cutting</option>
+            <option value="maintain">Maintain</option>
+          </select>
+          <button onClick={() => handleCalculate("macros")} className="w-full bg-green-500 text-white py-2 rounded">
+            Calculate
+          </button>
+          {macros && (
+            <p className="mt-2">
+              Protein: <strong>{macros.macros.protein}g</strong>, Carbs: <strong>{macros.macros.carbs}g</strong>, Fats: <strong>{macros.macros.fats}g</strong>
+            </p>
+          )}
+        </div>
+
+        {/* One-Rep Max Calculator */}
+        <div className="border p-4 rounded shadow-md">
+          <h2 className="text-xl font-bold">One-Rep Max Calculator</h2>
+          <input type="number" name="weight" placeholder="Weight Lifted (kg)" value={input.weight} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <input type="number" name="reps" placeholder="Reps Performed" value={input.reps} onChange={handleChange} className="w-full p-2 border rounded my-2" />
+          <button onClick={() => handleCalculate("oneRepMax")} className="w-full bg-red-500 text-white py-2 rounded">
+            Calculate
+          </button>
+          {oneRepMax && (
+            <p className="mt-2">
+              Estimated 1-Rep Max: <strong>{oneRepMax.oneRepMax} kg</strong>
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* Macro Calculator */}
-      <div className="border p-4 rounded-lg shadow-md bg-white mb-6">
-        <h2 className="text-xl font-semibold mb-4">Macro Calculator</h2>
-        <form onSubmit={handleSubmitMacros} className="space-y-3">
-          <input
-            type="number"
-            placeholder="Total Calories"
-            value={macroForm.calories}
-            onChange={(e) => setMacroForm({ ...macroForm, calories: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <select value={macroForm.goal} onChange={(e) => setMacroForm({ ...macroForm, goal: e.target.value })} className="w-full p-2 border rounded">
-            <option value="Maintain">Maintain</option>
-            <option value="Lose Fat">Lose Fat</option>
-            <option value="Gain Muscle">Gain Muscle</option>
-          </select>
-          <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">
-            Calculate
-          </button>
-        </form>
-        {macros && (
-          <p className="mt-4 text-center">
-            Protein: {macros.protein}g, Carbs: {macros.carbs}g, Fats: {macros.fats}g
-          </p>
-        )}
-      </div>
-
-      {/* One-Rep Max Calculator */}
-      <div className="border p-4 rounded-lg shadow-md bg-white">
-        <h2 className="text-xl font-semibold mb-4">One-Rep Max Calculator</h2>
-        <form onSubmit={handleSubmitOneRepMax} className="space-y-3">
-          <input
-            type="number"
-            placeholder="Weight Lifted (kg)"
-            value={oneRepMaxForm.weight}
-            onChange={(e) => setOneRepMaxForm({ ...oneRepMaxForm, weight: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Reps Performed"
-            value={oneRepMaxForm.reps}
-            onChange={(e) => setOneRepMaxForm({ ...oneRepMaxForm, reps: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <button type="submit" className="w-full bg-red-500 text-white p-2 rounded">
-            Calculate
-          </button>
-        </form>
-        {oneRepMax && (
-          <p className="mt-4 text-center">
-            Estimated One-Rep Max: <strong>{oneRepMax.max} kg</strong>
-          </p>
-        )}
-      </div>
+      {loading && <p className="text-center text-gray-500 mt-4">Calculating...</p>}
+      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
     </div>
   );
 }

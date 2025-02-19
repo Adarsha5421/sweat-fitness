@@ -11,7 +11,7 @@ export default function AdminPanel() {
   const [workoutForm, setWorkoutForm] = useState({
     name: "",
     bodyPart: "",
-    difficulty: "",
+    difficulty: "Beginner",
     equipment: "",
     instructions: "",
     videoUrl: "",
@@ -28,14 +28,13 @@ export default function AdminPanel() {
     return <p className="text-center text-red-500">Access Denied. Admins Only.</p>;
   }
 
-  // Handle form submission for creating a workout
   const handleWorkoutSubmit = async (e) => {
     e.preventDefault();
     await addWorkout(token, workoutForm);
     setWorkoutForm({
       name: "",
       bodyPart: "",
-      difficulty: "",
+      difficulty: "Beginner",
       equipment: "",
       instructions: "",
       videoUrl: "",
@@ -90,14 +89,43 @@ export default function AdminPanel() {
           value={workoutForm.name}
           onChange={(e) => setWorkoutForm({ ...workoutForm, name: e.target.value })}
         />
+        <select name="bodyPart" required className="border p-2 w-full" value={workoutForm.bodyPart} onChange={(e) => setWorkoutForm({ ...workoutForm, bodyPart: e.target.value })}>
+          <option value="">Select Body Part</option>
+          <option value="Chest">Chest</option>
+          <option value="Arms">Arms</option>
+          <option value="Back">Back</option>
+          <option value="Legs">Legs</option>
+          <option value="Abs">Abs</option>
+          <option value="Shoulders">Shoulders</option>
+        </select>
+        <select name="difficulty" className="border p-2 w-full" value={workoutForm.difficulty} onChange={(e) => setWorkoutForm({ ...workoutForm, difficulty: e.target.value })}>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
         <input
           type="text"
-          name="bodyPart"
-          placeholder="Body Part"
+          name="equipment"
+          placeholder="Equipment (optional)"
+          className="border p-2 w-full"
+          value={workoutForm.equipment}
+          onChange={(e) => setWorkoutForm({ ...workoutForm, equipment: e.target.value })}
+        />
+        <textarea
+          name="instructions"
+          placeholder="Instructions"
           required
           className="border p-2 w-full"
-          value={workoutForm.bodyPart}
-          onChange={(e) => setWorkoutForm({ ...workoutForm, bodyPart: e.target.value })}
+          value={workoutForm.instructions}
+          onChange={(e) => setWorkoutForm({ ...workoutForm, instructions: e.target.value })}
+        />
+        <input
+          type="text"
+          name="videoUrl"
+          placeholder="Video URL (optional)"
+          className="border p-2 w-full"
+          value={workoutForm.videoUrl}
+          onChange={(e) => setWorkoutForm({ ...workoutForm, videoUrl: e.target.value })}
         />
         <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
           Add Workout
@@ -107,8 +135,11 @@ export default function AdminPanel() {
       {/* List of workouts (deletable) */}
       <ul>
         {workouts.map((w) => (
-          <li key={w._id}>
-            {w.name} <button onClick={() => removeWorkout(token, w._id)}>❌</button>
+          <li key={w._id} className="border p-2 rounded flex justify-between">
+            {w.name} ({w.bodyPart})
+            <button onClick={() => removeWorkout(token, w._id)} className="bg-red-500 text-white px-2 py-1 rounded">
+              ❌
+            </button>
           </li>
         ))}
       </ul>
