@@ -66,6 +66,26 @@ exports.getCurrentUser = async (req, res) => {
   }
 };
 
+exports.updateUserProfile = async (req, res) => {
+  try {
+    const { name, fitnessGoal } = req.body; // Update allowed fields
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (name) user.name = name;
+    if (fitnessGoal) user.fitnessGoal = fitnessGoal;
+
+    await user.save();
+    res.json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+};
+
 // Logout
 exports.logout = (req, res) => {
   res.clearCookie("token");

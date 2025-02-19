@@ -21,6 +21,14 @@ export const fetchUser = async () => {
   return res.data;
 };
 
+// ✅ Add updateUserProfile function
+export const updateUserProfile = async (token, updatedData) => {
+  const res = await axios.put(`${API_URL}/profile`, updatedData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
 // Logout API
 export const logoutUser = async () => {
   localStorage.removeItem("token"); // ✅ Remove token on logout
