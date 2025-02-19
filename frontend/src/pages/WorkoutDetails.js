@@ -25,10 +25,22 @@ export default function WorkoutDetails() {
       <p className="text-gray-500">Difficulty: {selectedWorkout.difficulty}</p>
       <p className="mt-4">{selectedWorkout.instructions}</p>
       {selectedWorkout.videoUrl && (
-        <video className="w-full mt-4" controls>
-          <source src={selectedWorkout.videoUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <div className="w-full mt-4">
+          {selectedWorkout.videoUrl.includes("youtube.com") || selectedWorkout.videoUrl.includes("youtu.be") ? (
+            <iframe
+              className="w-full h-64 md:h-80 lg:h-96"
+              src={selectedWorkout.videoUrl.replace("watch?v=", "embed/")} // ✅ Converts YouTube links to embed URLs
+              title="Workout Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <video className="w-full mt-4" controls>
+              <source src={selectedWorkout.videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </div>
       )}
     </div>
   );

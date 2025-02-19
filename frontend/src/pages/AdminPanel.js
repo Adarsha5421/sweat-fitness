@@ -133,15 +133,20 @@ export default function AdminPanel() {
       </form>
 
       {/* List of workouts (deletable) */}
+      {workouts.length > 0 ? <h2 className="text-2xl font-semibold mb-4">Available Workouts</h2> : ""}
       <ul>
-        {workouts.map((w) => (
-          <li key={w._id} className="border p-2 rounded flex justify-between">
-            {w.name} ({w.bodyPart})
-            <button onClick={() => removeWorkout(token, w._id)} className="bg-red-500 text-white px-2 py-1 rounded">
-              ❌
-            </button>
-          </li>
-        ))}
+        {workouts.map((w) =>
+          w.name && w.bodyPart ? (
+            <li key={w._id} className="border p-2 rounded flex justify-between">
+              {w.name} ({w.bodyPart})
+              <button onClick={() => removeWorkout(token, w._id)} className="bg-red-500 text-white px-2 py-1 rounded">
+                ❌
+              </button>
+            </li>
+          ) : (
+            ""
+          )
+        )}
       </ul>
     </div>
   );

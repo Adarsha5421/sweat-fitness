@@ -43,10 +43,6 @@ export default function Workouts() {
           <option value="Intermediate">Intermediate</option>
           <option value="Advanced">Advanced</option>
         </select>
-
-        <button onClick={() => handleFilterByBodyPart("")} className="px-4 py-2 bg-red-500 text-white rounded">
-          Clear Filters
-        </button>
       </div>
 
       {/* Loading/Error Handling */}
@@ -56,22 +52,21 @@ export default function Workouts() {
 
       {/* Workout List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredWorkouts.map((workout) => (
-          <div key={workout._id} className="border rounded-lg p-4 shadow-md bg-white">
-            <h2 className="text-xl font-semibold">{workout.name}</h2>
-            <p className="text-gray-600">{workout.bodyPart}</p>
-            <p className="text-gray-500">Difficulty: {workout.difficulty}</p>
-            {workout.videoUrl && (
-              <video className="w-full mt-2" controls>
-                <source src={workout.videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
-            <Link to={`/workouts/${workout._id}`} className="mt-3 block px-4 py-2 bg-blue-500 text-white text-center rounded">
-              View Details
-            </Link>
-          </div>
-        ))}
+        {filteredWorkouts.map((workout) => {
+          console.log(workout);
+
+          return (
+            <div key={workout._id} className="border rounded-lg p-4 shadow-md bg-white">
+              <h2 className="text-xl font-semibold">{workout.name}</h2>
+              <p className="text-gray-600">{workout.bodyPart}</p>
+              <p className="text-gray-500">Difficulty: {workout.difficulty}</p>
+
+              <Link to={`/workouts/${workout._id}`} className="mt-3 block px-4 py-2 bg-blue-500 text-white text-center rounded">
+                View Details
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

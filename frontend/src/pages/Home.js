@@ -63,11 +63,25 @@ export default function Home() {
             <p className="text-gray-600">{workout.bodyPart}</p>
             <p className="text-gray-500">Difficulty: {workout.difficulty}</p>
             {workout.videoUrl && (
-              <video className="w-full mt-2" controls>
-                <source src={workout.videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <div className="w-full mt-2">
+                {workout.videoUrl.includes("youtube.com") || workout.videoUrl.includes("youtu.be") ? (
+                  <iframe
+                    className="w-full h-64 md:h-80 lg:h-96"
+                    src={workout.videoUrl.replace("watch?v=", "embed/")} // ✅ Converts YouTube links to embed URLs
+                    title="Workout Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <video className="w-full mt-2" controls>
+                    <source src={workout.videoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+              </div>
             )}
+
             <Link to={`/workouts/${workout._id}`} className="mt-3 block px-4 py-2 bg-blue-500 text-white text-center rounded">
               View Details
             </Link>
