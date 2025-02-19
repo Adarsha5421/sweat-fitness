@@ -63,7 +63,7 @@ exports.getCurrentUser = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
   try {
-    const { name, fitnessGoal } = req.body; // Update allowed fields
+    const { name, fitnessGoal, age, weight, height } = req.body; // Update allowed fields
     const user = await User.findById(req.user.id);
 
     if (!user) {
@@ -72,6 +72,9 @@ exports.updateUserProfile = async (req, res) => {
 
     if (name) user.name = name;
     if (fitnessGoal) user.fitnessGoal = fitnessGoal;
+    if (age) user.age = age;
+    if (weight) user.weight = weight;
+    if (height) user.height = height;
 
     await user.save();
     res.json({ message: "Profile updated successfully", user });

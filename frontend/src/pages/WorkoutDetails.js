@@ -11,37 +11,49 @@ export default function WorkoutDetails() {
     loadWorkoutDetails(id);
   }, [id, loadWorkoutDetails]);
 
-  if (loading) return <p className="text-center">Loading workout details...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
-  if (!selectedWorkout) return <p className="text-center">Workout not found.</p>;
+  if (loading) return <p className="text-center text-gray-400 mt-10">Loading workout details...</p>;
+  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
+  if (!selectedWorkout) return <p className="text-center text-gray-500 mt-10">Workout not found.</p>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <button onClick={() => navigate(-1)} className="mb-4 px-4 py-2 bg-gray-300 rounded">
+    <div className="bg-black text-white min-h-screen py-12 px-6">
+      {/* ✅ Back Button */}
+      <button onClick={() => navigate(-1)} className="mb-6 px-6 py-2 bg-gray-800 text-gray-200 rounded-lg hover:bg-gray-700 transition">
         ← Back to Workouts
       </button>
-      <h1 className="text-3xl font-bold">{selectedWorkout.name}</h1>
-      <p className="text-gray-600">{selectedWorkout.bodyPart}</p>
-      <p className="text-gray-500">Difficulty: {selectedWorkout.difficulty}</p>
-      <p className="mt-4">{selectedWorkout.instructions}</p>
-      {selectedWorkout.videoUrl && (
-        <div className="w-full mt-4">
-          {selectedWorkout.videoUrl.includes("youtube.com") || selectedWorkout.videoUrl.includes("youtu.be") ? (
-            <iframe
-              className="w-full h-64 md:h-80 lg:h-96"
-              src={selectedWorkout.videoUrl.replace("watch?v=", "embed/")} // ✅ Converts YouTube links to embed URLs
-              title="Workout Video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          ) : (
-            <video className="w-full mt-4" controls>
-              <source src={selectedWorkout.videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          )}
-        </div>
-      )}
+
+      {/* ✅ Workout Details */}
+      <div className="max-w-4xl mx-auto bg-gray-900 p-8 rounded-lg shadow-lg">
+        <h1 className="text-4xl font-bold text-red-500">{selectedWorkout.name}</h1>
+        <p className="text-gray-400 mt-2 text-lg">
+          Body Part: <span className="text-gray-300">{selectedWorkout.bodyPart}</span>
+        </p>
+        <p className="text-gray-400">
+          Difficulty: <span className="text-gray-300">{selectedWorkout.difficulty}</span>
+        </p>
+        <p className="mt-6 text-gray-300">{selectedWorkout.instructions}</p>
+
+        {/* ✅ Video Embed (YouTube / MP4) */}
+        {selectedWorkout.videoUrl && (
+          <div className="w-full mt-6">
+            {selectedWorkout.videoUrl.includes("youtube.com") || selectedWorkout.videoUrl.includes("youtu.be") ? (
+              <iframe
+                className="w-full h-96 md:h-96 rounded-lg"
+                src={selectedWorkout.videoUrl.replace("watch?v=", "embed/")}
+                title="Workout Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <video className="w-full rounded-lg" controls>
+                <source src={selectedWorkout.videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

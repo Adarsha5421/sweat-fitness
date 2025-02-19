@@ -36,7 +36,7 @@ export default function Workouts() {
         <p className="mt-2 text-lg text-gray-300">Browse expert-designed workouts for your fitness journey.</p>
       </div>
 
-      <div className="max-w-6xl mx-auto py-12 px-6">
+      <div className="max-w-3xl mx-auto py-12 px-6">
         {/* 🔥 Muscle Map Component */}
         <MuscleMap onSelect={handleFilterByBodyPart} />
 
@@ -56,9 +56,9 @@ export default function Workouts() {
         {filteredWorkouts.length === 0 && !loading && <p className="text-center text-gray-500 mt-6">No workouts found.</p>}
 
         {/* 🔥 Workout List */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 ">
           {filteredWorkouts.map((workout) => (
-            <div key={workout._id} className="bg-gray-900 p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+            <div key={workout._id} className="bg-gray-900  p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
               <h2 className="text-xl font-semibold text-white">{workout.name}</h2>
               <p className="text-red-400">{workout.bodyPart}</p>
               <p className="text-gray-400">Difficulty: {workout.difficulty}</p>
@@ -68,7 +68,7 @@ export default function Workouts() {
                 <div className="mt-4">
                   {workout.videoUrl.includes("youtube.com") || workout.videoUrl.includes("youtu.be") ? (
                     <iframe
-                      className="w-full h-48 rounded-lg"
+                      className="w-full h-80 rounded-lg"
                       src={workout.videoUrl.replace("watch?v=", "embed/")}
                       title="Workout Video"
                       frameBorder="0"
