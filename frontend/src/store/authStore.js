@@ -1,5 +1,6 @@
-import create from "zustand";
-import { fetchUserProfile, updateUserProfile, logoutUser } from "../api/userApi";
+import { create } from "zustand";
+import { fetchUserProfile, updateUserProfile } from "../api/userApi";
+import { logoutUser } from "../api/authApi";
 
 const useAuthStore = create((set) => ({
   user: null,

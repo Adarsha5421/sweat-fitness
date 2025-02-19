@@ -7,7 +7,7 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 const router = express.Router();
 
 router.get("/", getAllWorkouts);
-router.get("/:bodyPart", getWorkoutsByBodyPart);
+router.get("/bodypart/:bodyPart", getWorkoutsByBodyPart);
 router.get("/id/:id", getWorkoutById);
 
 // Admin Only Routes

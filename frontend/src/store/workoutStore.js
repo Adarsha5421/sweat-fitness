@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { fetchWorkouts, fetchWorkoutById, createWorkout, updateWorkout, deleteWorkout, fetchWorkoutsByBodyPart } from "../api/workoutApi";
 
 const useWorkoutStore = create((set) => ({

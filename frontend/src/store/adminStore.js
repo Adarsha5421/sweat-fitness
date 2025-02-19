@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { fetchAllUsers, updateUserRole, deleteUser } from "../api/adminApi";
 
 const useAdminStore = create((set) => ({

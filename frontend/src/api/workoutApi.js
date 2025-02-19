@@ -10,7 +10,13 @@ export const fetchWorkouts = async () => {
 
 // Fetch single workout by ID
 export const fetchWorkoutById = async (id) => {
-  const res = await axios.get(`${API_URL}/id/${id}`);
+  const res = await axios.get(`${API_URL}/id/${id}`); // ✅ Matches backend route
+  return res.data;
+};
+
+// Fetch workouts by body part ✅ Updated route
+export const fetchWorkoutsByBodyPart = async (bodyPart) => {
+  const res = await axios.get(`${API_URL}/bodypart/${bodyPart}`); // ✅ Matches backend route
   return res.data;
 };
 
