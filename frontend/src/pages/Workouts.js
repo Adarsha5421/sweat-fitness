@@ -29,44 +29,67 @@ export default function Workouts() {
   const filteredWorkouts = selectedDifficulty ? workouts.filter((workout) => workout.difficulty === selectedDifficulty) : workouts;
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Workout Library</h1>
-
-      {/* Muscle Map Component */}
-      <MuscleMap onSelect={handleFilterByBodyPart} />
-
-      {/* Filter Controls */}
-      <div className="flex justify-center gap-3 my-6">
-        <select value={selectedDifficulty} onChange={(e) => handleFilterByDifficulty(e.target.value)} className="px-4 py-2 rounded border">
-          <option value="">All Difficulty Levels</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
+    <div className="bg-black text-white min-h-screen">
+      {/* 🔥 Header */}
+      <div className="text-center py-12 bg-gradient-to-b from-red-700 to-black">
+        <h1 className="text-4xl font-bold text-gray-300 uppercase">Workout Library</h1>
+        <p className="mt-2 text-lg text-gray-300">Browse expert-designed workouts for your fitness journey.</p>
       </div>
 
-      {/* Loading/Error Handling */}
-      {loading && <p className="text-center">Loading workouts...</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
-      {filteredWorkouts.length === 0 && !loading && <p className="text-center text-gray-500">No workouts found.</p>}
+      <div className="max-w-6xl mx-auto py-12 px-6">
+        {/* 🔥 Muscle Map Component */}
+        <MuscleMap onSelect={handleFilterByBodyPart} />
 
-      {/* Workout List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredWorkouts.map((workout) => {
-          console.log(workout);
+        {/* 🔥 Filter Controls */}
+        <div className="flex justify-center gap-4 mt-6">
+          <select value={selectedDifficulty} onChange={(e) => handleFilterByDifficulty(e.target.value)} className="px-4 py-2 rounded bg-gray-900 border border-red-500 text-white">
+            <option value="">All Difficulty Levels</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
 
-          return (
-            <div key={workout._id} className="border rounded-lg p-4 shadow-md bg-white">
-              <h2 className="text-xl font-semibold">{workout.name}</h2>
-              <p className="text-gray-600">{workout.bodyPart}</p>
-              <p className="text-gray-500">Difficulty: {workout.difficulty}</p>
+        {/* 🔥 Loading & Error Handling */}
+        {loading && <p className="text-center text-gray-400 mt-6">Loading workouts...</p>}
+        {error && <p className="text-center text-red-500 mt-6">{error}</p>}
+        {filteredWorkouts.length === 0 && !loading && <p className="text-center text-gray-500 mt-6">No workouts found.</p>}
 
-              <Link to={`/workouts/${workout._id}`} className="mt-3 block px-4 py-2 bg-blue-500 text-white text-center rounded">
-                View Details
+        {/* 🔥 Workout List */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+          {filteredWorkouts.map((workout) => (
+            <div key={workout._id} className="bg-gray-900 p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+              <h2 className="text-xl font-semibold text-white">{workout.name}</h2>
+              <p className="text-red-400">{workout.bodyPart}</p>
+              <p className="text-gray-400">Difficulty: {workout.difficulty}</p>
+
+              {/* ✅ Video or YouTube Embed */}
+              {workout.videoUrl && (
+                <div className="mt-4">
+                  {workout.videoUrl.includes("youtube.com") || workout.videoUrl.includes("youtu.be") ? (
+                    <iframe
+                      className="w-full h-48 rounded-lg"
+                      src={workout.videoUrl.replace("watch?v=", "embed/")}
+                      title="Workout Video"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  ) : (
+                    <video className="w-full rounded-lg" controls>
+                      <source src={workout.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+                </div>
+              )}
+
+              <Link to={`/workouts/${workout._id}`} className="mt-4 block px-4 py-2 bg-red-500 text-white text-center rounded-lg hover:bg-red-700 transition">
+                View Workout
               </Link>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>
   );

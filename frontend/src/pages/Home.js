@@ -14,79 +14,80 @@ export default function Home() {
 
   useEffect(() => {
     if (workouts.length > 0) {
-      // Pick 3 random workouts to display as "Featured Workouts"
       const shuffled = [...workouts].sort(() => 0.5 - Math.random());
       setFeaturedWorkouts(shuffled.slice(0, 3));
     }
   }, [workouts]);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      {/* Welcome Section */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold">Welcome to Sweat Fitness</h1>
-        <p className="text-lg text-gray-600 mt-2">Your ultimate destination for personalized workouts, fitness tracking, and nutrition planning.</p>
-      </div>
-
-      {/* Quick Navigation Buttons */}
-      <div className="flex justify-center gap-4 mb-8">
-        <Link to="/workouts" className="px-6 py-3 bg-blue-500 text-white rounded-lg">
-          Explore Workouts
-        </Link>
-        <Link to="/calculators" className="px-6 py-3 bg-green-500 text-white rounded-lg">
-          Try Calculators
-        </Link>
-        {user ? (
-          <>
-            <Link to="/profile" className="px-6 py-3 bg-gray-700 text-white rounded-lg">
-              Go to Profile
-            </Link>
-            {user.role === "admin" && (
-              <Link to="/admin" className="px-6 py-3 bg-red-500 text-white rounded-lg">
-                Admin Panel
-              </Link>
-            )}
-          </>
-        ) : (
-          <Link to="/login" className="px-6 py-3 bg-yellow-500 text-white rounded-lg">
-            Login / Sign Up
+    <div className="bg-black text-white min-h-screen">
+      {/* 🔥 Hero Section */}
+      <div className="text-center py-16 bg-gradient-to-b from-red-700 to-black">
+        <h1 className="text-5xl font-bold text-gray-300 uppercase">Sweat Fitness</h1>
+        <p className="mt-4 text-lg max-w-2xl mx-auto text-gray-300">Achieve your fitness goals with expert-designed workout programs and tools.</p>
+        <div className="mt-6 flex justify-center space-x-6">
+          <Link to="/workouts" className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-700 transition">
+            Explore Workouts
           </Link>
-        )}
+          <Link to="/calculators" className="px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+            Fitness Calculators
+          </Link>
+          {user ? (
+            <>
+              <Link to="/profile" className="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition">
+                My Profile
+              </Link>
+              {user.role === "admin" && (
+                <Link to="/admin" className="px-6 py-3 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-600 transition">
+                  Admin Panel
+                </Link>
+              )}
+            </>
+          ) : (
+            <Link to="/login" className="px-6 py-3 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition">
+              Login / Sign Up
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Featured Workouts Section */}
-      <h2 className="text-2xl font-bold mb-4">Featured Workouts</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {featuredWorkouts.map((workout) => (
-          <div key={workout._id} className="border rounded-lg p-4 shadow-md bg-white">
-            <h3 className="text-xl font-semibold">{workout.name}</h3>
-            <p className="text-gray-600">{workout.bodyPart}</p>
-            <p className="text-gray-500">Difficulty: {workout.difficulty}</p>
-            {workout.videoUrl && (
-              <div className="w-full mt-2">
-                {workout.videoUrl.includes("youtube.com") || workout.videoUrl.includes("youtu.be") ? (
-                  <iframe
-                    className="w-full h-64 md:h-80 lg:h-96"
-                    src={workout.videoUrl.replace("watch?v=", "embed/")} // ✅ Converts YouTube links to embed URLs
-                    title="Workout Video"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <video className="w-full mt-2" controls>
-                    <source src={workout.videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-              </div>
-            )}
+      {/* 🔥 Featured Workouts Section */}
+      <div className="max-w-3xl mx-auto py-12 px-6">
+        <h2 className="text-3xl font-bold text-red-500 text-center uppercase">Featured Workouts</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
+          {featuredWorkouts.map((workout) => (
+            <div key={workout._id} className="bg-gray-900 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
+              <h3 className="text-xl font-semibold text-white">{workout.name}</h3>
+              <p className="text-red-400">{workout.bodyPart}</p>
+              <p className="text-gray-400">Difficulty: {workout.difficulty}</p>
 
-            <Link to={`/workouts/${workout._id}`} className="mt-3 block px-4 py-2 bg-blue-500 text-white text-center rounded">
-              View Details
-            </Link>
-          </div>
-        ))}
+              {/* ✅ Video or YouTube Embed */}
+              {workout.videoUrl && (
+                <div className="mt-4">
+                  {workout.videoUrl.includes("youtube.com") || workout.videoUrl.includes("youtu.be") ? (
+                    <iframe
+                      className="w-full h-80 rounded-lg"
+                      src={workout.videoUrl.replace("watch?v=", "embed/")}
+                      title="Workout Video"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  ) : (
+                    <video className="w-full rounded-lg" controls>
+                      <source src={workout.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+                </div>
+              )}
+
+              <Link to={`/workouts/${workout._id}`} className="mt-4 block px-4 py-2 bg-red-500 text-white text-center rounded-lg hover:bg-red-700 transition">
+                View Workout
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
