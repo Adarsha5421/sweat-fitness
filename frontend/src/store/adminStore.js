@@ -11,6 +11,8 @@ const useAdminStore = create((set) => ({
     set({ loading: true });
     try {
       const data = await fetchAllUsers(token);
+      console.log(data);
+
       set({ users: data, loading: false });
     } catch (error) {
       set({ error: "Failed to load users", loading: false });

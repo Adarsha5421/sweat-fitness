@@ -3,34 +3,54 @@ import { fetchUser, logoutUser, updateUserProfile } from "../api/authApi";
 
 const useAuthStore = create((set) => ({
   user: null,
+  token: localStorage.getItem("token") || null, // ✅ Store token in state
 
-  // ✅ Fetch user data from API
+  // ✅ Load user data from API
   loadUser: async () => {
+    const token = localStorage.getItem("token"); // ✅ Ensure token is used
+    if (!token) {
+      console.warn("🚨 No token found in localStorage");
+      return;
+    }
+
     try {
-      const data = await fetchUser();
-      set({ user: data.user });
+      const data = await fetchUser(token);
+      set({ user: data.user, token });
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      console.error("🚨 Failed to fetch user:", error);
+      set({ user: null, token: null });
+      localStorage.removeItem("token");
     }
   },
 
-  // Update user data (make sure this is defined)
+  // ✅ Update user profile
   updateUser: async (updatedData) => {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found");
+    if (!token) {
+      console.error("🚨 No token found when updating user.");
+      return;
+    }
 
     try {
-      const updatedUser = await updateUserProfile(token, updatedData); // API call
+      const updatedUser = await updateUserProfile(token, updatedData);
       set({ user: updatedUser.user });
     } catch (error) {
-      console.error("Failed to update user:", error);
+      console.error("🚨 Failed to update user:", error);
     }
+  },
+
+  // ✅ Set token after login
+  setToken: (newToken) => {
+    console.log("✅ Storing Token in Zustand & LocalStorage:", newToken);
+    localStorage.setItem("token", newToken);
+    set({ token: newToken });
   },
 
   // ✅ Logout function
   logout: async () => {
     await logoutUser();
-    set({ user: null });
+    localStorage.removeItem("token");
+    set({ user: null, token: null });
   },
 }));
 
