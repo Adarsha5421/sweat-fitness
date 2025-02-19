@@ -16,7 +16,6 @@ const adminMiddleware = async (req, res, next) => {
       return res.status(403).json({ error: "Access denied: Admins only" });
     }
 
-    console.log("✅ Admin Access Granted:", user.email);
     next(); // Proceed if admin
   } catch (err) {
     console.error("🚨 Admin Middleware Error:", err);

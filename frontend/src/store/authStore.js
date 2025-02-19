@@ -41,7 +41,6 @@ const useAuthStore = create((set) => ({
 
   // ✅ Set token after login
   setToken: (newToken) => {
-    console.log("✅ Storing Token in Zustand & LocalStorage:", newToken);
     localStorage.setItem("token", newToken);
     set({ token: newToken });
   },

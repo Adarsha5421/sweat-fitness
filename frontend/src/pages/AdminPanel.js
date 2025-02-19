@@ -18,7 +18,6 @@ export default function AdminPanel() {
   });
 
   useEffect(() => {
-    console.log(token);
     if (token) {
       loadUsers(token);
       loadWorkouts();
