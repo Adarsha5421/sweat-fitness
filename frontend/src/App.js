@@ -11,26 +11,22 @@ import Navbar from "./components/Navbar";
 import useAuthStore from "./store/authStore";
 
 function App() {
-  const { setUser } = useAuthStore();
+  const { loadUser } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) setUser(token);
-  }, [setUser]);
-
-  useEffect(() => {
-    // Extract token from URL after Google login
+    // ✅ Extract token from URL after Google login
     const urlParams = new URLSearchParams(location.search);
     const token = urlParams.get("token");
 
     if (token) {
+      console.log("✅ Storing Correct Token in LocalStorage:", token); // Debugging log
       localStorage.setItem("token", token);
-      setUser(token);
-      navigate("/profile"); // ✅ Fix: Redirect to Profile instead of Dashboard
+      loadUser();
+      navigate("/profile");
     }
-  }, [location, navigate, setUser]);
+  }, [location, navigate, loadUser]);
 
   return (
     <>
@@ -41,7 +37,7 @@ function App() {
         <Route path="/workouts/:id" element={<WorkoutDetails />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/calculators" element={<Calculators />} /> {/* ✅ Add Calculators Route */}
+        <Route path="/calculators" element={<Calculators />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </>

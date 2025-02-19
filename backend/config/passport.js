@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "  ",
+      callbackURL: "http://localhost:5000/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -31,20 +31,25 @@ passport.use(
           await user.save();
         }
 
-        // Generate JWT token
+        console.log("User Found or Created:", user); // ✅ Debugging Log
+
+        // ✅ Fix: Ensure `id` is stored in the JWT
         const token = jwt.sign(
           {
-            id: user._id,
+            id: user._id.toString(), // ✅ Ensure `id` is stored
             name: user.name,
             email: user.email,
             profilePic: user.profilePic,
           },
           process.env.JWT_SECRET,
-          { expiresIn: process.env.JWT_EXPIRES_IN }
+          { expiresIn: "7d" } // Use a valid expiration time
         );
+
+        console.log("Generated Token:", token); // ✅ Debugging Log
 
         return done(null, { user, token });
       } catch (error) {
+        console.error("Google OAuth Error:", error); // ✅ Log errors
         return done(error, null);
       }
     }
@@ -52,7 +57,7 @@ passport.use(
 );
 
 passport.serializeUser((data, done) => {
-  done(null, data);
+  done(null, { user: data.user, token: data.token }); // ✅ Ensure token is included
 });
 
 passport.deserializeUser(async (data, done) => {

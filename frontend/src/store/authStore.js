@@ -1,40 +1,23 @@
 import { create } from "zustand";
-import { fetchUserProfile, updateUserProfile } from "../api/userApi";
-import { logoutUser } from "../api/authApi";
+import { fetchUser, logoutUser } from "../api/authApi";
 
 const useAuthStore = create((set) => ({
   user: null,
-  token: localStorage.getItem("token") || null,
 
-  // Set user & token
-  setUser: async (token) => {
-    if (!token) return;
-
-    localStorage.setItem("token", token);
-
+  // ✅ Fetch user data from API
+  loadUser: async () => {
     try {
-      const userData = await fetchUserProfile(token);
-      set({ user: userData.user, token });
+      const data = await fetchUser();
+      set({ user: data.user });
     } catch (error) {
       console.error("Failed to fetch user:", error);
     }
   },
 
-  // Update user fitness data
-  updateUser: async (token, updatedData) => {
-    try {
-      const res = await updateUserProfile(token, updatedData);
-      set({ user: res.user });
-    } catch (error) {
-      console.error("Failed to update user:", error);
-    }
-  },
-
-  // Logout function
+  // ✅ Logout function
   logout: async () => {
     await logoutUser();
-    localStorage.removeItem("token");
-    set({ user: null, token: null });
+    set({ user: null });
   },
 }));
 
