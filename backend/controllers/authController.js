@@ -1,6 +1,8 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 // Google OAuth Login
 exports.googleAuth = passport.authenticate("google", { scope: ["profile", "email"] });
@@ -90,4 +92,97 @@ exports.logout = (req, res) => {
   req.logout(() => {
     res.status(200).json({ message: "Logged Out" });
   });
+};
+
+// **Generate JWT**
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, name: user.name, email: user.email, profilePic: user.profilePic }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
+
+// **📌 Email/Password Sign-Up**
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Please provide all fields" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ error: "User already exists" });
+
+    const user = await User.create({ name, email, password });
+    const token = generateToken(user);
+
+    res.status(201).json({ message: "User registered successfully", user, token });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error: "Registration failed" });
+  }
+};
+
+// **📌 Email/Password Login**
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+
+    const token = generateToken(user);
+    res.json({ message: "Login successful", user, token });
+  } catch (error) {
+    res.status(500).json({ error: "Login failed" });
+  }
+};
+
+// **📌 Forgot Password**
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    // **Send Email**
+    const transporter = nodemailer.createTransport({ service: "Gmail", auth: { user: process.env.EMAIL, pass: process.env.EMAIL_PASS } });
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: user.email,
+      subject: "Password Reset Request",
+      text: `Click the link to reset your password: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+    });
+
+    res.json({ message: "Password reset email sent" });
+  } catch (error) {
+    res.status(500).json({ error: "Error sending reset email" });
+  }
+};
+
+// **📌 Reset Password**
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpire: { $gt: Date.now() } });
+
+    if (!user) return res.status(400).json({ error: "Invalid or expired token" });
+
+    user.password = newPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpire = null;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Password reset failed" });
+  }
 };

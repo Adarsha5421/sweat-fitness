@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import useAuthStore from "../store/authStore";
 import useAdminStore from "../store/adminStore";
 import useWorkoutStore from "../store/workoutStore";
+import EditWorkout from "./EditWorkout";
 
 export default function AdminPanel() {
   const { user, token } = useAuthStore();
   const { users, loadUsers, changeUserRole, removeUser } = useAdminStore();
-  const { workouts, loadWorkouts, addWorkout, removeWorkout } = useWorkoutStore();
+  const { workouts, loadWorkouts, addWorkout, removeWorkout, editWorkout } = useWorkoutStore();
+  const [editingWorkout, setEditingWorkout] = useState(null);
 
   const [workoutForm, setWorkoutForm] = useState({
     name: "",
@@ -151,21 +153,41 @@ export default function AdminPanel() {
           </form>
 
           {/* ✅ List of Workouts */}
-          {workouts.length > 0 && <h3 className="text-xl font-semibold mt-6 text-red-400">Available Workouts</h3>}
-          <ul className="mt-4">
-            {workouts.map((w) => (
-              <li key={w._id} className="flex justify-between items-center p-2 border border-gray-700 rounded bg-gray-800 my-2">
+          {workouts.length > 0 && (
+            <h3 key={1} className="text-xl font-semibold mt-6 text-red-400">
+              Available Workouts
+            </h3>
+          )}
+          <ul>
+            {workouts.map((workout) => (
+              <li key={workout._id} className="flex justify-between items-center p-2 border border-gray-700 rounded bg-gray-800 my-2">
                 <span>
-                  {w.name} ({w.bodyPart})
+                  {workout.name} ({workout.bodyPart})
                 </span>
-                <button onClick={() => removeWorkout(token, w._id)} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition">
-                  ❌
-                </button>
+                <div>
+                  <button onClick={() => setEditingWorkout(workout)} className="bg-yellow-500 px-3 py-1 rounded mr-2 hover:bg-yellow-600 transition">
+                    Edit
+                  </button>
+                  <button onClick={() => removeWorkout(token, workout._id)} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition">
+                    ❌
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         </div>
       </div>
+      {/* Show Edit Workout Modal if a workout is being edited */}
+      {editingWorkout && (
+        <EditWorkout
+          workout={editingWorkout}
+          onClose={() => setEditingWorkout(null)}
+          onSave={(updatedWorkout) => {
+            editWorkout(token, editingWorkout._id, updatedWorkout);
+            setEditingWorkout(null);
+          }}
+        />
+      )}
     </div>
   );
 }

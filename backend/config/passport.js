@@ -20,14 +20,7 @@ passport.use(
             name: profile.displayName,
             email: profile.emails[0].value,
             googleId: profile.id,
-            profilePic: profile.photos[0].value,
           });
-          await user.save();
-        }
-
-        // Update profile picture if changed
-        if (user.profilePic !== profile.photos[0].value) {
-          user.profilePic = profile.photos[0].value;
           await user.save();
         }
 
@@ -37,7 +30,6 @@ passport.use(
             id: user._id.toString(), // ✅ Ensure `id` is stored
             name: user.name,
             email: user.email,
-            profilePic: user.profilePic,
           },
           process.env.JWT_SECRET,
           { expiresIn: "7d" } // Use a valid expiration time

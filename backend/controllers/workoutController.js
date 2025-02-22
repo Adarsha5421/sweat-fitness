@@ -53,17 +53,6 @@ exports.createWorkout = async (req, res) => {
   }
 };
 
-// Update a workout
-exports.updateWorkout = async (req, res) => {
-  try {
-    const updatedWorkout = await Workout.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedWorkout) return res.status(404).json({ error: "Workout not found" });
-    res.json({ message: "Workout updated successfully", workout: updatedWorkout });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update workout" });
-  }
-};
-
 // Delete a workout (Admin Only)
 exports.deleteWorkout = async (req, res) => {
   try {
@@ -72,5 +61,23 @@ exports.deleteWorkout = async (req, res) => {
     res.json({ message: "Workout deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete workout" });
+  }
+};
+
+exports.updateWorkout = async (req, res) => {
+  try {
+    const { name, bodyPart, difficulty, equipment, instructions, videoUrl } = req.body;
+
+    const updatedWorkout = await Workout.findByIdAndUpdate(req.params.id, { name, bodyPart, difficulty, equipment, instructions, videoUrl }, { new: true, runValidators: true });
+
+    if (!updatedWorkout) {
+      console.error("Workout not found:", req.params.id);
+      return res.status(404).json({ error: "Workout not found" });
+    }
+
+    res.json({ message: "Workout updated successfully", workout: updatedWorkout });
+  } catch (error) {
+    console.error("Error updating workout:", error);
+    res.status(500).json({ error: "Failed to update workout" });
   }
 };

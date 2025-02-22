@@ -5,6 +5,15 @@ import logo from "../assets/logo.png";
 export default function Navbar() {
   const { user, logout } = useAuthStore();
 
+  // ✅ Generate default profile picture (first letter of name)
+  const getDefaultProfilePic = (name) => {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ff0000&color=ffffff&size=128&bold=true`;
+  };
+
+  const profilePic = user?.profilePic
+    ? `http://localhost:5000/uploads/${user.profilePic}` // Use uploaded image from backend
+    : getDefaultProfilePic(user?.name || "U"); // Use first letter avatar
+
   return (
     <nav className="bg-black text-white px-6 py-4 flex justify-between items-center shadow-lg border-b border-red-600">
       {/* Left Section - Logo */}
@@ -20,15 +29,17 @@ export default function Navbar() {
         <Link to="/calculators" className="hover:text-red-500 transition">
           Calculators
         </Link>
+
         {user ? (
           <>
             {user.role === "admin" && (
-              <Link to="/admin" className=" hover:text-red-500 transition">
+              <Link to="/admin" className="hover:text-red-500 transition">
                 Admin
               </Link>
             )}
+
             <Link to="/profile" className="hover:text-red-500 transition">
-              <img src={user.profilePic} alt="User" className="w-10 h-10 rounded-full border-2 border-red-500 shadow-md" />
+              <img src={profilePic} alt="User" className="w-10 h-10 rounded-full border-2 border-red-500 shadow-md" />
             </Link>
 
             <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">

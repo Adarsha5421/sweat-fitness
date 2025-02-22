@@ -42,32 +42,23 @@ const useWorkoutStore = create((set) => ({
 
   // Create a new workout
   addWorkout: async (token, workoutData) => {
+    set({ loading: true, error: null });
     try {
       const newWorkout = await createWorkout(token, workoutData);
-      set((state) => ({ workouts: [...state.workouts, newWorkout] }));
+      set((state) => ({ workouts: [...state.workouts, newWorkout.workout], loading: false }));
     } catch (error) {
       console.error("Failed to create workout:", error);
     }
   },
 
-  // Update a workout
-  editWorkout: async (token, workoutId, updatedData) => {
-    try {
-      const updatedWorkout = await updateWorkout(token, workoutId, updatedData);
-      set((state) => ({
-        workouts: state.workouts.map((w) => (w._id === workoutId ? updatedWorkout : w)),
-      }));
-    } catch (error) {
-      console.error("Failed to update workout:", error);
-    }
-  },
-
   // Delete a workout
   removeWorkout: async (token, workoutId) => {
+    set({ loading: true, error: null });
     try {
-      await deleteWorkout(token, workoutId);
+      await deleteWorkout(workoutId);
       set((state) => ({
         workouts: state.workouts.filter((w) => w._id !== workoutId),
+        loading: false,
       }));
     } catch (error) {
       console.error("Failed to delete workout:", error);
@@ -76,12 +67,24 @@ const useWorkoutStore = create((set) => ({
 
   // Reset all filters
   resetFilters: async () => {
-    set({ loading: true, error: null });
     try {
       const data = await fetchWorkouts();
       set({ workouts: data, loading: false });
     } catch (error) {
       set({ error: "Error resetting filters.", loading: false });
+    }
+  },
+
+  editWorkout: async (token, workoutId, updatedData) => {
+    set({ loading: true, error: null });
+    try {
+      const updatedWorkout = await updateWorkout(workoutId, updatedData);
+      set((state) => ({
+        workouts: state.workouts.map((w) => (w._id === workoutId ? updatedWorkout.workout : w)),
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to update workout:", error);
     }
   },
 }));

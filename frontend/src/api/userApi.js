@@ -10,10 +10,17 @@ export const fetchUserProfile = async (token) => {
   return res.data;
 };
 
-// Update user profile
-export const updateUserProfile = async (token, updatedData) => {
-  const res = await axios.put(`${API_URL}/profile`, updatedData, {
-    headers: { Authorization: `Bearer ${token}` },
+// ✅ Update User Profile (Handles Text Fields + Profile Picture in ONE Request)
+export const updateUserProfile = async (formData) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found");
+
+  const res = await axios.put(`${API_URL}/profile`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data", // ✅ Ensure correct content type
+      Authorization: `Bearer ${token}`,
+    },
   });
+
   return res.data;
 };

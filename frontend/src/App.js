@@ -9,6 +9,7 @@ import Calculators from "./pages/Calculators";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import useAuthStore from "./store/authStore";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -37,6 +38,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/calculators" element={<Calculators />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </>

@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const session = require("express-session");
 const connectDB = require("./config/db");
+const path = require("path");
 require("./config/passport");
 
 const app = express();
@@ -31,6 +32,8 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/workouts", require("./routes/workoutRoutes"));
 app.use("/api/calculators", require("./routes/calculatorRoutes"));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("Fitness API is running...");
